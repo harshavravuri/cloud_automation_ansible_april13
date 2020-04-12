@@ -1,0 +1,16 @@
+---
+- name: create new ssh keypair
+  ec2_key:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    aws_region: "{{ region }}"
+    name: ansible_course_keypair
+  register: keypair
+
+- name: write the key to a file
+  copy:
+    dest: course_aws_privatekey.pem
+    content: "{{ keypair.key.private_key }}"
+    mode: 0600
+  when: keypair.changed
+

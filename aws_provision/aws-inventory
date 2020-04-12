@@ -1,0 +1,12 @@
+[loadbalancers]
+ip-10-0-1-75.us-east-2.compute.internal ansible_host=18.219.13.53
+[databases]
+ip-10-0-1-205.us-east-2.compute.internal ansible_host=3.133.159.110
+[webservers]
+ip-10-0-1-43.us-east-2.compute.internal ansible_host=18.224.43.77
+ ansible_host=3.133.150.224
+[control]
+localhost ansible_connection=local
+[all:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=./course_aws_privatekey.pem

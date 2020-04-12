@@ -1,0 +1,49 @@
+---
+- name: gather vpc info
+  ec2_vpc_net_info:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    region: "{{ region }}"
+    filters:
+      "tag:env": ansible-course
+  register: vpc_facts
+
+- debug:
+    var: vpc_facts
+
+- name: subnet info
+  ec2_vpc_subnet_info:
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    region: "{{ region }}"    
+    filters:
+      "tag:env": ansible-course
+  register: subnet_facts
+
+- debug:
+    var: subnet_facts
+
+- name: delete subnet
+  ec2_vpc_subnet:
+    state: absent
+    vpc_id: "{{ vpc_facts.vpcs[0].vpc_id }}"
+    cidr: 10.0.1.0/24
+    region: "{{ region }}"
+    az: "{{ az }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course" }
+  when: vpc_facts.vpcs is defined and (vpc_facts.vpcs|length>0)
+
+- name: delete vpc
+  ec2_vpc_net:
+    state: absent
+    region: "{{ region }}"
+    cidr_block: 10.0.0.0/16    
+    tags: { "env": "ansible-course" }
+    dns_hostnames: yes
+    dns_support: yes
+    name: ansible_course_vpc
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+  

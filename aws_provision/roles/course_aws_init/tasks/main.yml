@@ -1,0 +1,22 @@
+---
+- name: include credential file
+  include_vars: aws_credentials.yml
+
+- name: include aws configuration
+  include_vars: aws_config.yml
+
+- name: create ssh key-pair
+  include_tasks: ssh_keypair.yml
+  when: environment_state == 'present'
+
+- name: create VPC
+  include_tasks: create_vpc.yml
+  when: environment_state == 'present'
+
+- name: delete VPC
+  include_tasks: delete_vpc.yml
+  when: environment_state == 'absent'
+
+- name: create EC2 instances
+  include_tasks: ec2.yml
+  when: environment_state == 'present'

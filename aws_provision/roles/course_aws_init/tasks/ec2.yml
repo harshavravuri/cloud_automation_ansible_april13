@@ -1,0 +1,97 @@
+---
+# ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112 (ami-0fc20dd1da406780b)
+- name: manage loadbalancer instance
+  ec2_instance:
+    state: "{{ environment_state }}"
+    name: lb01
+    key_name: ansible_course_keypair
+    vpc_subnet_id: "{{ subnet_ret.subnet.id }}"
+    instance_type: t2.micro
+    security_group: ssh_and_http_only
+    image_id: ami-0fc20dd1da406780b
+    region: "{{ region }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course" }
+    network:
+      assign_public_ip: yes
+  register: ret
+
+- copy:
+    content: "{{ ret.instances[0].network_interfaces[0].private_dns_name }} ansible_host={{ ret.instances[0].network_interfaces[0].association.public_ip}}\n"
+    dest: lb01.tmp
+
+- debug:
+    var: ret
+  
+- name: manage database instance
+  ec2_instance:
+    state: "{{ environment_state }}"
+    name: db01
+    key_name: ansible_course_keypair
+    vpc_subnet_id: "{{ subnet_ret.subnet.id }}"
+    instance_type: t2.micro
+    security_group: ssh_only
+    image_id: ami-0fc20dd1da406780b
+    region: "{{ region }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course" }
+    network:
+      assign_public_ip: yes
+  register: ret
+
+- debug:
+    var: ret
+
+- copy:
+    content: "{{ ret.instances[0].network_interfaces[0].private_dns_name }} ansible_host={{ ret.instances[0].network_interfaces[0].association.public_ip}}\n"
+    dest: db01.tmp
+
+- name: manage webserver 1
+  ec2_instance:
+    state: "{{ environment_state }}"
+    name: web01
+    key_name: ansible_course_keypair
+    vpc_subnet_id: "{{ subnet_ret.subnet.id }}"
+    instance_type: t2.micro
+    security_group: ssh_and_http_only
+    image_id: ami-0fc20dd1da406780b
+    region: "{{ region }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course" }
+    network:
+      assign_public_ip: yes
+  register: ret
+
+- debug:
+    var: ret
+
+- copy:
+    content: "{{ ret.instances[0].network_interfaces[0].private_dns_name }} ansible_host={{ ret.instances[0].network_interfaces[0].association.public_ip}}\n"
+    dest: web01.tmp
+
+- name: manage webserver 2
+  ec2_instance:
+    state: "{{ environment_state }}"
+    name: web02
+    key_name: ansible_course_keypair
+    vpc_subnet_id: "{{ subnet_ret.subnet.id }}"
+    instance_type: t2.micro
+    security_group: ssh_and_http_only
+    image_id: ami-0fc20dd1da406780b
+    region: "{{ region }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course" }
+    network:
+      assign_public_ip: yes
+  register: ret
+
+- debug:
+    var: ret
+
+- copy:
+    content: "{{ ret.instances[0].network_interfaces[0].private_dns_name }} ansible_host={{ ret.instances[0].network_interfaces[0].association.public_ip}}\n"
+    dest: web02.tmp

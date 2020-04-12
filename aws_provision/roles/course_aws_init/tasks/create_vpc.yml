@@ -1,0 +1,105 @@
+---
+- name: create VPC  
+  ec2_vpc_net:
+    state: present
+    region: "{{ region }}"
+    cidr_block: 10.0.0.0/16    
+    tags: { "env": "ansible-course", "Name": "ansible_course_vpc" }
+    dns_hostnames: yes
+    dns_support: yes
+    name: ansible_course_vpc
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+  register: vpc_ret
+
+- debug:
+    var: vpc_ret.vpc
+
+- name: create subnet
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ vpc_ret.vpc.id }}"
+    cidr: 10.0.1.0/24
+    region: "{{ region }}"
+    az: "{{ az }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course", "Name": "ansible-course-subnet" }
+  register: subnet_ret
+
+- debug:
+    var: subnet_ret
+
+- name: create internet gw
+  ec2_vpc_igw:
+    state: present
+    vpc_id: "{{ vpc_ret.vpc.id }}"
+    region: "{{ region }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course", "Name": "ansible-course-igw" }    
+  register: igw_ret
+
+- debug:
+    var: igw_ret
+
+- name: setup route table
+  ec2_vpc_route_table:
+    state: present
+    vpc_id: "{{ vpc_ret.vpc.id }}"
+    region: "{{ region }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course", "Name": "ansible-course-route" }  
+    subnets:
+      - '10.0.1.0/24'
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw_ret.gateway_id }}"
+  register: route_ret
+
+- name: create security group - ssh and mysql only
+  ec2_group:
+    state: present
+    name: ssh_only
+    description: SSH inbound only
+    vpc_id: "{{ vpc_ret.vpc.id }}"
+    region: "{{ region }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course" }  
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+        cidr_ip: 0.0.0.0/0
+        rule_desc: allows inbound ssh traffic
+      - proto: tcp
+        ports:
+          - 3306
+        cidr_ip: 10.0.1.0/24
+        rule_desc: allows inbound ssh traffic
+
+- name: create security group - ssh and http only
+  ec2_group:
+    state: present
+    name: ssh_and_http_only
+    description: SSH and HTTP inbound only
+    vpc_id: "{{ vpc_ret.vpc.id }}"
+    region: "{{ region }}"
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+    tags: { "env": "ansible-course" }  
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+        cidr_ip: 0.0.0.0/0
+        rule_desc: allows inbound ssh traffic
+      - proto: tcp
+        ports:
+          - 80
+        cidr_ip: 0.0.0.0/0
+        rule_desc: allows inbound http traffic
+
+

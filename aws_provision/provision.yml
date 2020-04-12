@@ -1,0 +1,8 @@
+---
+- hosts: control
+  gather_facts: no
+  roles:
+    - role: course_aws_init
+      vars:
+        environment_state: present
+        lb_hosts: ["lb01", "lb02"]
