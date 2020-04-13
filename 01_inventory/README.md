@@ -8,22 +8,22 @@ Use ansible.cfg to configure your inventory file
 Example for host selection patterns:
 
 1. Select all hosts from a certain group:
-```code
+```bash
 ansible --list-hosts loadbalancers
 ```
 
 2. Selecting multiple groups:
-```code
+```bash
 ansible --list-hosts loadbalancers:webservers
 ```
 
 3. Select all hosts with wildcard:
-```code
+```bash
 ansible --list-hosts "app*"
 ```
 
 4. Selecting specific hosts from a group
-```code
+```bash
 # select the first one
 ubuntu@ip-10-0-1-96:~/ansible$ ansible --list-hosts appservers[0]
   hosts (1):
