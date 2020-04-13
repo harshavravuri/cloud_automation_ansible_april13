@@ -1,0 +1,22 @@
+---
+# this runs on the remote targets
+- hosts: servers
+  become: true
+
+  tasks:
+    - name: install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+# this is an another task sets runs on the control / localhost node
+- hosts: control
+  become: true
+  tasks:
+    - name: install a command line http client
+      apt:
+        name: curl
+        state: present
+        update_cache: yes
+

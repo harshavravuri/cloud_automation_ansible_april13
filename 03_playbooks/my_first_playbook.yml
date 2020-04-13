@@ -1,0 +1,29 @@
+---
+
+# Every ansible playbook is  a list of dictionaries
+# (soft) mandatory: value needs to have a: 
+#  - hosts key (defines the target nodes)
+#  - tasks key (defines the list of tasks what we want to run on the targets)
+#  - some other parameters and options (e.g. become: true K-V)
+
+- hosts: servers
+
+  # enables privilage escalation for the tasks
+  become: true  
+
+  tasks:
+    # here comes the task definitions (this is a list)
+    
+    # first task for servers
+    - name: Install ntpdate
+      # we will use the apt module to install ntpdate
+      apt: name=ntpdate state=present update_cache=yes
+
+    # this is the 2nd task
+    - name: update /etc/motd file
+      # key-value pair with a value type of dict
+      copy:
+        dest: /etc/motd
+        content: Welcome from Ansible !!!
+      # the above is equal to the following:
+      # copy: dest=/etc/motd content="...."
