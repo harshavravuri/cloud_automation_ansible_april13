@@ -1,5 +1,8 @@
 ---
 
+# To execute ansible playbooks, use ansible-playbook command
+# example: ansible-playbook my_first_playbook.yml
+
 # Every ansible playbook is  a list of dictionaries
 # (soft) mandatory: value needs to have a: 
 #  - hosts key (defines the target nodes)
