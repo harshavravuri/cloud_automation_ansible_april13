@@ -24,22 +24,23 @@ ansible --list-hosts "app*"
 
 4. Selecting specific hosts from a group
 ```code
+# select the first one
 ubuntu@ip-10-0-1-96:~/ansible$ ansible --list-hosts appservers[0]
   hosts (1):
     app01
+# select the second
 ubuntu@ip-10-0-1-96:~/ansible$ ansible --list-hosts appservers[1]
   hosts (1):
     app02
+# select the last
 ubuntu@ip-10-0-1-96:~/ansible$ ansible --list-hosts appservers[-1]
   hosts (1):
     app10
+# select the second from the end
 ubuntu@ip-10-0-1-96:~/ansible$ ansible --list-hosts appservers[-2]
   hosts (1):
     app09
-ubuntu@ip-10-0-1-96:~/ansible$ ansible --list-hosts appservers[:3]
-[WARNING]: Could not match supplied host pattern, ignoring: appservers[:3]
-[WARNING]: No hosts matched, nothing to do
-  hosts (0):
+@ select first 3
 ubuntu@ip-10-0-1-96:~/ansible$ ansible --list-hosts appservers[0:3]
   hosts (4):
     app01
