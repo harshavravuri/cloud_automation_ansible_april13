@@ -44,3 +44,12 @@ These actions are not idempotent as Ansible could not tell if a command changes 
 ```bash
 ansible -m copy -a "src=./my-motd dest=/etc/motd" all
 ```
+
+## Apt module: insalling/removing software packages on ubuntu/debian
+
+Link for the apt module doc: https://docs.ansible.com/ansible/latest/modules/apt_module.html
+
+```bash
+ansible -m apt -a 'name=ntpdate state=present' all
+ansible -m apt -a 'name=ntpdate state=absent' all
+```
